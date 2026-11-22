@@ -31,7 +31,11 @@ fn array_violation(
     is Some(problem) {
     return Some(problem)
   }
-  let unique = field_at(schema, "uniqueItems") is Some(True)
+  let seen = if field_at(schema, "uniqueItems") is Some(True) {
+    Some(Map([], capacity=items.length()))
+  } else {
+    None
+  }
   let contains_schema = field_at(schema, "contains")
   let mut matched = 0
   for i, value in items {
@@ -39,16 +43,16 @@ fn array_violation(
     if invalid_value(item_at(schema, i), value, position) is Some(problem) {
       return Some(problem)
     }
-    if unique {
-      for previous in 0..<i {
-        if exact_equal(items[previous], value) {
-          return Some(
-            violation(
-              position, "uniqueItems", "Value duplicates an earlier array element",
-            ),
-          )
-        }
+    if seen is Some(keys) {
+      let key = exact_json_key(value)
+      if keys.contains(key) {
+        return Some(
+          violation(
+            position, "uniqueItems", "Value duplicates an earlier array element",
+          ),
+        )
       }
+      keys.set(key, true)
     }
     if contains_schema is Some(needle) && accepts(needle, value) {
       matched += 1

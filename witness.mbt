@@ -8,7 +8,7 @@ fn witness_record(
     Map([
       ("outputs", Json::object(outputs)),
       ("request", request),
-      ("validation", explain_instance(step.input, request)),
+      ("validation", explain_expanded_instance(step.input, request)),
     ]),
   )
 }

@@ -45,14 +45,17 @@ pub fn verify_witness(
   id : String,
   witness : Json,
 ) -> Bool raise CheckError {
-  let steps = order_steps(load_steps(catalog, plan))
-  let index : Map[String, Step] = Map([])
-  for step in steps {
-    index.set(step.id, step)
-  }
-  let step = match index.get(id) {
-    Some(step) => step
-    None => raise Invalid("Unknown step: " + id)
+  verify_prepared_witness(prepare_workflow(catalog, plan), id, witness)
+}
+
+///|
+fn verify_prepared_witness(
+  workflow : PreparedWorkflow,
+  id : String,
+  witness : Json,
+) -> Bool raise CheckError {
+  guard workflow.index.get(id) is Some(step) else {
+    raise Invalid("Unknown step: " + id)
   }
   if !step.tool_available {
     return field_at(witness, "kind") == Some(Json::string("missing_tool"))
@@ -61,16 +64,11 @@ pub fn verify_witness(
   let request = required_member(witness, "request")
   let needed : Map[String, Bool] = Map([])
   for binding in step.bindings {
-    if binding.source is Some(parent) {
+    if binding.source is Some(parent) && !needed.contains(parent) {
       needed.set(parent, true)
-      let source_schema = if parent == "$inputs" {
-        field_at(plan, "inputs")
-      } else {
-        index[parent].output
-      }
-      match (source_schema, outputs.get(parent)) {
+      match (prepared_source(workflow, parent), outputs.get(parent)) {
         (Some(schema), Some(value)) =>
-          if validate_instance(schema, value) != Some(true) {
+          if validate_expanded_instance(schema, value) != Some(true) {
             return false
           }
         _ => return false
@@ -79,5 +77,5 @@ pub fn verify_witness(
   }
   outputs.length() == needed.length() &&
   exact_equal(assembled(step, outputs), request) &&
-  validate_instance(step.input, request) == Some(false)
+  validate_expanded_instance(step.input, request) == Some(false)
 }

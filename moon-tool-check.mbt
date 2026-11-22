@@ -31,7 +31,7 @@ fn field_at(value : Json, name : String) -> Json? {
 fn required_member(value : Json, name : String) -> Json raise CheckError {
   match field_at(value, name) {
     Some(field) => field
-    None => raise Invalid("Missing field_at: " + name)
+    None => raise Invalid("Missing field: " + name)
   }
 }
 

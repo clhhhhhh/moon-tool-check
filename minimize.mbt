@@ -92,18 +92,22 @@ pub fn minimize_workflow_witness(
   step_id : String,
   witness : Json,
 ) -> Json raise CheckError {
-  if !verify_witness(catalog, plan, step_id, witness) {
+  minimize_prepared_witness(prepare_workflow(catalog, plan), step_id, witness)
+}
+
+///|
+fn minimize_prepared_witness(
+  workflow : PreparedWorkflow,
+  step_id : String,
+  witness : Json,
+) -> Json raise CheckError {
+  if !verify_prepared_witness(workflow, step_id, witness) {
     raise Invalid("Cannot minimize a counterexample that fails verification")
   }
-  if field_at(witness, "kind") is Some(_) {
+  let step = workflow.index[step_id]
+  if !step.tool_available {
     return witness
   }
-  let steps = order_steps(load_steps(catalog, plan))
-  let index : Map[String, Step] = Map([])
-  for step in steps {
-    index.set(step.id, step)
-  }
-  let step = index[step_id]
   let outputs = object_value(required_member(witness, "outputs")).copy()
   let original = required_member(witness, "request")
   guard invalid_value(step.input, original, "") is Some(initial) else {
@@ -118,20 +122,16 @@ pub fn minimize_workflow_witness(
     let mut changed = false
     for name in sources {
       let given = outputs[name]
-      let schema = if name == "$inputs" {
-        field_at(plan, "inputs").map(expand_schema)
-      } else {
-        index[name].output
-      }
-      guard schema is Some(contract) else { continue }
+      guard prepared_source(workflow, name) is Some(contract) else { continue }
       let mut best = given
+      let mut best_cost = witness_cost(given)
       for candidate in shrink_values(given, 0) {
         budget -= 1
         if budget < 0 {
           break
         }
-        if witness_cost(candidate) >= witness_cost(best) ||
-          !accepts(contract, candidate) {
+        let cost = witness_cost(candidate)
+        if cost >= best_cost || !accepts(contract, candidate) {
           continue
         }
         outputs.set(name, candidate)
@@ -139,6 +139,7 @@ pub fn minimize_workflow_witness(
           is Some(problem) &&
           same_violation(initial, problem) {
           best = candidate
+          best_cost = cost
         }
       }
       outputs.set(name, best)

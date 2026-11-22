@@ -1,7 +1,6 @@
 ///|
 fn capture_bundled_entry(
-  catalog : Json,
-  plan : Json,
+  workflow : PreparedWorkflow,
   row : Json,
   minimize : Bool,
 ) -> Json? raise CheckError {
@@ -9,7 +8,7 @@ fn capture_bundled_entry(
   let step = required_member(row, "step")
   let id = string_value(step)
   let reduced = if minimize {
-    minimize_workflow_witness(catalog, plan, id, witness)
+    minimize_prepared_witness(workflow, id, witness)
   } else {
     witness
   }
@@ -31,10 +30,11 @@ pub fn export_witnesses(
   plan : Json,
   minimize~ : Bool = true,
 ) -> Json raise CheckError {
-  let rows = array_value(check_workflow(catalog, plan))
+  let workflow = prepare_workflow(catalog, plan)
+  let rows = array_value(check_prepared_workflow(workflow))
   let entries : Array[Json] = []
   for row in rows {
-    if capture_bundled_entry(catalog, plan, row, minimize) is Some(entry) {
+    if capture_bundled_entry(workflow, row, minimize) is Some(entry) {
       entries.push(entry)
     }
   }
@@ -52,6 +52,7 @@ pub fn verify_witnesses(
   if !exact_equal(required_member(bundle, "version"), Json::number(1.0)) {
     raise Invalid("Unsupported witness bundle version")
   }
+  let workflow = prepare_workflow(catalog, plan)
   let seen : Map[String, Bool] = Map([])
   let results : Array[Json] = []
   let mut invalid = 0
@@ -62,7 +63,7 @@ pub fn verify_witnesses(
     }
     seen.set(step, true)
     let witness = required_member(entry, "witness")
-    let verified = verify_witness(catalog, plan, step, witness)
+    let verified = verify_prepared_witness(workflow, step, witness)
     if !verified {
       invalid += 1
     }

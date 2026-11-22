@@ -174,7 +174,11 @@ fn accepts(schema : Json, value : Json) -> Bool {
 
 ///|
 pub fn validate_instance(schema : Json, instance : Json) -> Bool? {
-  let schema = expand_schema(schema)
+  validate_expanded_instance(expand_schema(schema), instance)
+}
+
+///|
+fn validate_expanded_instance(schema : Json, instance : Json) -> Bool? {
   if supports(schema, 0) && exact_value(instance) {
     Some(accepts(schema, instance))
   } else {

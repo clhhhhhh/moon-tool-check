@@ -33,8 +33,17 @@ fn load_steps(catalog : Json, plan : Json) -> Array[Step] raise CheckError {
     let tool = tools.get(key)
     let bindings : Array[Binding] = []
     for parameter, binding in object_value(required_member(value, "args")) {
-      if field_at(binding, "input") is Some(String(path)) {
-        if inputs is None || object_value(binding).length() != 1 {
+      let fields = object_value(binding)
+      if fields.get("input") is Some(String(path)) {
+        if fields.length() != 1 {
+          raise Invalid(
+            "Unexpected fields in input binding for " +
+            id +
+            "/" +
+            escaped(parameter),
+          )
+        }
+        if inputs is None {
           raise Invalid("Input binding requires a workflow inputs schema")
         }
         bindings.push({
@@ -45,10 +54,11 @@ fn load_steps(catalog : Json, plan : Json) -> Array[Step] raise CheckError {
         })
         continue
       }
-      match (field_at(binding, "literal"), field_at(binding, "from")) {
-        (Some(literal), None) =>
+      match (fields.get("literal"), fields.get("from")) {
+        (Some(literal), None) if fields.length() == 1 =>
           bindings.push({ parameter, source: None, pointer: [], literal, })
-        (None, Some(String(source))) => {
+        (None, Some(String(source))) if source != "$inputs" &&
+          fields.length() == 2 => {
           let pointer = pointer_tokens(
             string_value(required_member(binding, "pointer")),
           )
@@ -174,18 +184,49 @@ fn projection(step : Step, predecessors : Map[String, Json]) -> Json {
 
 ///|
 pub fn check_workflow(catalog : Json, plan : Json) -> Json raise CheckError {
+  check_prepared_workflow(prepare_workflow(catalog, plan))
+}
+
+///|
+priv struct PreparedWorkflow {
+  ordered : Array[Step]
+  index : Map[String, Step]
+  inputs : Json?
+}
+
+///|
+fn prepare_workflow(
+  catalog : Json,
+  plan : Json,
+) -> PreparedWorkflow raise CheckError {
   let ordered = order_steps(load_steps(catalog, plan))
-  let outputs : Map[String, Json?] = Map([])
-  outputs.set("$inputs", field_at(plan, "inputs").map(expand_schema))
-  let results : Array[Json] = []
+  let index : Map[String, Step] = Map([])
   for step in ordered {
+    index.set(step.id, step)
+  }
+  { ordered, index, inputs: field_at(plan, "inputs").map(expand_schema), }
+}
+
+///|
+fn prepared_source(workflow : PreparedWorkflow, name : String) -> Json? {
+  if name == "$inputs" {
+    workflow.inputs
+  } else {
+    workflow.index.get(name).bind(step => step.output)
+  }
+}
+
+///|
+fn check_prepared_workflow(workflow : PreparedWorkflow) -> Json {
+  let results : Array[Json] = []
+  for step in workflow.ordered {
     let predecessors : Map[String, Json] = Map([])
     let mut missing = false
     for binding in step.bindings {
       if binding.source is Some(parent) {
-        match outputs.get(parent) {
-          Some(Some(schema)) => predecessors.set(parent, schema)
-          _ => missing = true
+        match prepared_source(workflow, parent) {
+          Some(schema) => predecessors.set(parent, schema)
+          None => missing = true
         }
       }
     }
@@ -208,7 +249,6 @@ pub fn check_workflow(catalog : Json, plan : Json) -> Json raise CheckError {
       }
     }
     results.push(render_step(step.id, state))
-    outputs.set(step.id, step.output)
   }
   Json::array(results)
 }

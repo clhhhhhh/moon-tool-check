@@ -184,3 +184,51 @@ fn exact_equal(a : Json, b : Json) -> Bool {
 fn decimal_limit(schema : Json, key : String) -> Decimal? {
   field_at(schema, key).bind(decimal_value)
 }
+
+///|
+/// Canonical form for exact JSON equality. Sorting object keys makes insertion
+/// order irrelevant, and decimal normalization retains the original precision.
+fn exact_json_key(value : Json) -> String {
+  let key = StringBuilder()
+  write_exact_key(key, value)
+  key.to_string()
+}
+
+///|
+fn write_exact_key(key : StringBuilder, value : Json) -> Unit {
+  match value {
+    Number(_, ..) =>
+      if decimal_value(value) is Some(decimal) {
+        key.write_char('n')
+        key.write_string(decimal.sign.to_string())
+        key.write_char(':')
+        for digit in decimal.digits {
+          key.write_char(('0'.to_int() + digit).unsafe_to_char())
+        }
+        key.write_char('e')
+        key.write_string(decimal.power.to_string())
+        key.write_char(';')
+      }
+    Array(items) => {
+      key.write_char('[')
+      for item in items {
+        write_exact_key(key, item)
+      }
+      key.write_char(']')
+    }
+    Object(fields) => {
+      key.write_char('{')
+      let names : Array[String] = []
+      for name, _ in fields {
+        names.push(name)
+      }
+      names.sort()
+      for name in names {
+        key.write_string(Json::string(name).stringify())
+        write_exact_key(key, fields[name])
+      }
+      key.write_char('}')
+    }
+    _ => key.write_string(value.stringify())
+  }
+}

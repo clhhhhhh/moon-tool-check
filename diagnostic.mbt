@@ -167,7 +167,11 @@ fn length_violation(
 
 ///|
 pub fn explain_instance(schema : Json, instance : Json) -> Json {
-  let resolved = expand_schema(schema)
+  explain_expanded_instance(expand_schema(schema), instance)
+}
+
+///|
+fn explain_expanded_instance(resolved : Json, instance : Json) -> Json {
   if !supports(resolved, 0) || !exact_value(instance) {
     return Json::object(Map([("status", Json::string("unknown"))]))
   }
