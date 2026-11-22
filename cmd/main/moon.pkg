@@ -1,0 +1,12 @@
+import {
+  "clbbbb/moon-tool-check" @toolcheck,
+  "moonbitlang/core/env",
+}
+
+pkgtype(kind: "executable")
+
+supported_targets = "js"
+
+options(
+  link: { "js": { "format": "cjs" } },
+)

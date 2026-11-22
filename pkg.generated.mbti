@@ -1,0 +1,87 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "clbbbb/moon-tool-check"
+
+import {
+  "moonbitlang/core/json",
+}
+
+// Values
+pub fn audit_samples(@json.Json, @json.Json) -> @json.Json raise CheckError
+
+pub fn audit_workflows(@json.Json, @json.Json) -> @json.Json raise CheckError
+
+pub fn check_trace(@json.Json, @json.Json, @json.Json) -> @json.Json raise CheckError
+
+pub fn check_workflow(@json.Json, @json.Json) -> @json.Json raise CheckError
+
+pub fn compare_catalogs(@json.Json, @json.Json) -> @json.Json raise CheckError
+
+pub fn compare_samples(@json.Json, @json.Json, @json.Json) -> @json.Json raise CheckError
+
+pub fn compare_schemas(@json.Json, @json.Json) -> Compatibility
+
+pub fn compare_trace(@json.Json, @json.Json, @json.Json, @json.Json) -> @json.Json raise CheckError
+
+pub fn compare_workflow(@json.Json, @json.Json, @json.Json) -> @json.Json raise CheckError
+
+pub fn compare_workflows(@json.Json, @json.Json, @json.Json) -> @json.Json raise CheckError
+
+pub fn explain_instance(@json.Json, @json.Json) -> @json.Json
+
+pub fn explain_upgrade(@json.Json, @json.Json, @json.Json) -> @json.Json raise CheckError
+
+pub fn export_witnesses(@json.Json, @json.Json, minimize? : Bool) -> @json.Json raise CheckError
+
+pub fn inspect_catalog(@json.Json) -> @json.Json raise CheckError
+
+pub fn inspect_schema(@json.Json) -> @json.Json
+
+pub fn minimize_workflow_witness(@json.Json, @json.Json, String, @json.Json) -> @json.Json raise CheckError
+
+pub fn normalize_catalog(@json.Json) -> @json.Json raise CheckError
+
+pub fn parse_json(String) -> @json.Json raise CheckError
+
+pub fn report_exit_status(@json.Json, ReportKind, CheckPolicy) -> Int32 raise CheckError
+
+pub fn validate_instance(@json.Json, @json.Json) -> Bool?
+
+pub fn verify_upgrade_witnesses(@json.Json, @json.Json, @json.Json) -> @json.Json raise CheckError
+
+pub fn verify_witness(@json.Json, @json.Json, String, @json.Json) -> Bool raise CheckError
+
+pub fn verify_witnesses(@json.Json, @json.Json, @json.Json) -> @json.Json raise CheckError
+
+pub fn workflow_sarif(@json.Json, @json.Json, String) -> @json.Json raise CheckError
+
+// Errors
+pub(all) suberror CheckError {
+  Invalid(String)
+}
+
+// Types and methods
+pub(all) enum CheckPolicy {
+  Default
+  Strict
+}
+
+pub(all) enum Compatibility {
+  Compatible
+  Incompatible(@json.Json)
+  Unknown(String)
+}
+
+pub(all) enum ReportKind {
+  Bundle
+  Workflow
+  Upgrade
+  Catalog
+  Suite
+  SuiteUpgrade
+  Verify
+  Instance
+}
+
+// Type aliases
+
+// Traits
