@@ -1,0 +1,92 @@
+[
+  {
+    "scenario": "orders",
+    "case": "fault",
+    "expected_failure": true,
+    "text_diff": true,
+    "structural_tool_diff": true,
+    "workflow_failure": true,
+    "verified_witnesses": 1,
+    "median_cli_ms": 127.1
+  },
+  {
+    "scenario": "orders",
+    "case": "description",
+    "expected_failure": false,
+    "text_diff": true,
+    "structural_tool_diff": false,
+    "workflow_failure": false,
+    "verified_witnesses": 0,
+    "median_cli_ms": 122.48
+  },
+  {
+    "scenario": "orders",
+    "case": "format",
+    "expected_failure": false,
+    "text_diff": true,
+    "structural_tool_diff": false,
+    "workflow_failure": false,
+    "verified_witnesses": 0,
+    "median_cli_ms": 117.32
+  },
+  {
+    "scenario": "knowledge",
+    "case": "fault",
+    "expected_failure": true,
+    "text_diff": true,
+    "structural_tool_diff": true,
+    "workflow_failure": true,
+    "verified_witnesses": 1,
+    "median_cli_ms": 116.45
+  },
+  {
+    "scenario": "knowledge",
+    "case": "description",
+    "expected_failure": false,
+    "text_diff": true,
+    "structural_tool_diff": false,
+    "workflow_failure": false,
+    "verified_witnesses": 0,
+    "median_cli_ms": 118.09
+  },
+  {
+    "scenario": "knowledge",
+    "case": "format",
+    "expected_failure": false,
+    "text_diff": true,
+    "structural_tool_diff": false,
+    "workflow_failure": false,
+    "verified_witnesses": 0,
+    "median_cli_ms": 116.7
+  },
+  {
+    "scenario": "report",
+    "case": "fault",
+    "expected_failure": true,
+    "text_diff": true,
+    "structural_tool_diff": true,
+    "workflow_failure": true,
+    "verified_witnesses": 1,
+    "median_cli_ms": 121.41
+  },
+  {
+    "scenario": "report",
+    "case": "description",
+    "expected_failure": false,
+    "text_diff": true,
+    "structural_tool_diff": false,
+    "workflow_failure": false,
+    "verified_witnesses": 0,
+    "median_cli_ms": 115.33
+  },
+  {
+    "scenario": "report",
+    "case": "format",
+    "expected_failure": false,
+    "text_diff": true,
+    "structural_tool_diff": false,
+    "workflow_failure": false,
+    "verified_witnesses": 0,
+    "median_cli_ms": 117.22
+  }
+]

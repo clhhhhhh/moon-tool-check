@@ -1,0 +1,21 @@
+{
+  "steps": [
+    {
+      "id": "source",
+      "server": "example",
+      "tool": "source",
+      "args": {}
+    },
+    {
+      "id": "sink",
+      "server": "example",
+      "tool": "sink",
+      "args": {
+        "docs": {
+          "from": "source",
+          "pointer": "/docs"
+        }
+      }
+    }
+  ]
+}

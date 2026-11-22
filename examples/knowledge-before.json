@@ -1,0 +1,47 @@
+{
+  "example": {
+    "tools": [
+      {
+        "name": "source",
+        "inputSchema": {
+          "type": "object"
+        },
+        "outputSchema": {
+          "type": "object",
+          "required": [
+            "docs"
+          ],
+          "properties": {
+            "docs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "sink",
+        "inputSchema": {
+          "type": "object",
+          "required": [
+            "docs"
+          ],
+          "properties": {
+            "docs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    ]
+  }
+}

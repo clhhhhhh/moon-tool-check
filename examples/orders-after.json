@@ -1,0 +1,42 @@
+{
+  "example": {
+    "tools": [
+      {
+        "name": "source",
+        "inputSchema": {
+          "type": "object"
+        },
+        "outputSchema": {
+          "type": "object",
+          "required": [
+            "order_id"
+          ],
+          "properties": {
+            "order_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "sink",
+        "inputSchema": {
+          "type": "object",
+          "required": [
+            "order_id"
+          ],
+          "properties": {
+            "order_id": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    ]
+  }
+}

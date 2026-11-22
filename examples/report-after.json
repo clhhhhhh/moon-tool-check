@@ -1,0 +1,43 @@
+{
+  "example": {
+    "tools": [
+      {
+        "name": "source",
+        "inputSchema": {
+          "type": "object"
+        },
+        "outputSchema": {
+          "type": "object",
+          "required": [
+            "count"
+          ],
+          "properties": {
+            "count": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 101
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "name": "sink",
+        "inputSchema": {
+          "type": "object",
+          "required": [
+            "count"
+          ],
+          "properties": {
+            "count": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    ]
+  }
+}
