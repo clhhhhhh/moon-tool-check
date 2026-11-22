@@ -5,9 +5,11 @@
     "expected_failure": true,
     "text_diff": true,
     "structural_tool_diff": true,
+    "catalog_breaking": true,
+    "catalog_unknown": false,
     "workflow_failure": true,
     "verified_witnesses": 1,
-    "median_cli_ms": 127.1
+    "median_cli_ms": 135.44
   },
   {
     "scenario": "orders",
@@ -15,9 +17,11 @@
     "expected_failure": false,
     "text_diff": true,
     "structural_tool_diff": false,
+    "catalog_breaking": false,
+    "catalog_unknown": false,
     "workflow_failure": false,
     "verified_witnesses": 0,
-    "median_cli_ms": 122.48
+    "median_cli_ms": 131.64
   },
   {
     "scenario": "orders",
@@ -25,9 +29,23 @@
     "expected_failure": false,
     "text_diff": true,
     "structural_tool_diff": false,
+    "catalog_breaking": false,
+    "catalog_unknown": false,
     "workflow_failure": false,
     "verified_witnesses": 0,
-    "median_cli_ms": 117.32
+    "median_cli_ms": 126.74
+  },
+  {
+    "scenario": "orders",
+    "case": "unbound_output",
+    "expected_failure": false,
+    "text_diff": true,
+    "structural_tool_diff": true,
+    "catalog_breaking": true,
+    "catalog_unknown": false,
+    "workflow_failure": false,
+    "verified_witnesses": 0,
+    "median_cli_ms": 124.4
   },
   {
     "scenario": "knowledge",
@@ -35,9 +53,11 @@
     "expected_failure": true,
     "text_diff": true,
     "structural_tool_diff": true,
+    "catalog_breaking": true,
+    "catalog_unknown": false,
     "workflow_failure": true,
     "verified_witnesses": 1,
-    "median_cli_ms": 116.45
+    "median_cli_ms": 123.98
   },
   {
     "scenario": "knowledge",
@@ -45,9 +65,11 @@
     "expected_failure": false,
     "text_diff": true,
     "structural_tool_diff": false,
+    "catalog_breaking": false,
+    "catalog_unknown": false,
     "workflow_failure": false,
     "verified_witnesses": 0,
-    "median_cli_ms": 118.09
+    "median_cli_ms": 124.04
   },
   {
     "scenario": "knowledge",
@@ -55,9 +77,23 @@
     "expected_failure": false,
     "text_diff": true,
     "structural_tool_diff": false,
+    "catalog_breaking": false,
+    "catalog_unknown": false,
     "workflow_failure": false,
     "verified_witnesses": 0,
-    "median_cli_ms": 116.7
+    "median_cli_ms": 127.39
+  },
+  {
+    "scenario": "knowledge",
+    "case": "unbound_output",
+    "expected_failure": false,
+    "text_diff": true,
+    "structural_tool_diff": true,
+    "catalog_breaking": true,
+    "catalog_unknown": false,
+    "workflow_failure": false,
+    "verified_witnesses": 0,
+    "median_cli_ms": 130.53
   },
   {
     "scenario": "report",
@@ -65,9 +101,11 @@
     "expected_failure": true,
     "text_diff": true,
     "structural_tool_diff": true,
+    "catalog_breaking": true,
+    "catalog_unknown": false,
     "workflow_failure": true,
     "verified_witnesses": 1,
-    "median_cli_ms": 121.41
+    "median_cli_ms": 126.16
   },
   {
     "scenario": "report",
@@ -75,9 +113,11 @@
     "expected_failure": false,
     "text_diff": true,
     "structural_tool_diff": false,
+    "catalog_breaking": false,
+    "catalog_unknown": false,
     "workflow_failure": false,
     "verified_witnesses": 0,
-    "median_cli_ms": 115.33
+    "median_cli_ms": 118.06
   },
   {
     "scenario": "report",
@@ -85,8 +125,46 @@
     "expected_failure": false,
     "text_diff": true,
     "structural_tool_diff": false,
+    "catalog_breaking": false,
+    "catalog_unknown": false,
     "workflow_failure": false,
     "verified_witnesses": 0,
-    "median_cli_ms": 117.22
+    "median_cli_ms": 124.37
+  },
+  {
+    "scenario": "report",
+    "case": "unbound_output",
+    "expected_failure": false,
+    "text_diff": true,
+    "structural_tool_diff": true,
+    "catalog_breaking": true,
+    "catalog_unknown": false,
+    "workflow_failure": false,
+    "verified_witnesses": 0,
+    "median_cli_ms": 121.37
+  },
+  {
+    "scenario": "correlation",
+    "case": "shared_source_safe",
+    "expected_failure": false,
+    "text_diff": true,
+    "structural_tool_diff": true,
+    "catalog_breaking": true,
+    "catalog_unknown": false,
+    "workflow_failure": false,
+    "verified_witnesses": 0,
+    "median_cli_ms": 131.56
+  },
+  {
+    "scenario": "correlation",
+    "case": "shared_source_breaks",
+    "expected_failure": true,
+    "text_diff": true,
+    "structural_tool_diff": true,
+    "catalog_breaking": true,
+    "catalog_unknown": false,
+    "workflow_failure": true,
+    "verified_witnesses": 1,
+    "median_cli_ms": 126.5
   }
 ]
