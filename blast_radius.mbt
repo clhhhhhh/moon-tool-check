@@ -76,9 +76,12 @@ pub fn explain_upgrade(
   let affected : Array[Json] = []
   let mut failures = 0
   let mut lost = 0
+  let mut has_unknown = false
   for row in array_value(changes) {
     let id = string_value(required_member(row, "step"))
     let change = string_value(required_member(row, "change"))
+    has_unknown = has_unknown ||
+      status_of(required_member(row, "after")) == "unknown"
     match change {
       "new_failure" => failures += 1
       "lost_proof" => lost += 1
@@ -96,7 +99,7 @@ pub fn explain_upgrade(
   }
   let state = if failures > 0 {
     "invalid"
-  } else if lost > 0 {
+  } else if has_unknown {
     "unknown"
   } else {
     "valid"

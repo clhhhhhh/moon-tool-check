@@ -6,7 +6,16 @@ fn trace_problem_key(problem : Json) -> String raise CheckError {
   let violation = field_at(detail, "violation").unwrap_or(Json::null())
   let path = field_at(violation, "pointer").unwrap_or(Json::null())
   let keyword = field_at(violation, "keyword").unwrap_or(Json::null())
-  Json::array([id, kind, path, keyword]).stringify()
+  let upstream = match kind {
+    String(
+      "upstream_error"
+      | "unavailable_output"
+      | "out_of_order"
+      | "missing_upstream_call"
+    ) => detail
+    _ => Json::null()
+  }
+  Json::array([id, kind, path, keyword, upstream]).stringify()
 }
 
 ///|

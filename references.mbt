@@ -36,15 +36,15 @@ fn expand_at(
         return schema
       }
     }
-    if !reference.has_prefix("#/$defs/") || references.contains(reference) {
+    guard decode_reference_fragment(reference) is Some(pointer) &&
+      pointer.has_prefix("/$defs/") &&
+      !references.contains(pointer) else {
       return schema
     }
-    let tokens = pointer_tokens(reference[1:].to_owned()) catch {
-      _ => return schema
-    }
+    let tokens = pointer_tokens(pointer) catch { _ => return schema }
     guard resolve(root, tokens) is Some(target) else { return schema }
     let next = references.copy()
-    next.push(reference)
+    next.push(pointer)
     return expand_at(target, root, next, budget, depth + 1)
   }
   let result : Map[String, Json] = Map([])
@@ -83,4 +83,50 @@ fn expand_at(
     }
   }
   Json::object(result)
+}
+
+///|
+fn decode_reference_fragment(reference : String) -> String? {
+  if !reference.has_prefix("#") {
+    return None
+  }
+  let fragment = reference[1:]
+  if !fragment.to_owned().contains("%") {
+    return Some(fragment.to_owned())
+  }
+  let encoded = @utf8.encode(fragment)
+  let bytes : Array[Byte] = []
+  let mut offset = 0
+  while offset < encoded.length() {
+    if encoded[offset] != b'%' {
+      bytes.push(encoded[offset])
+      offset += 1
+      continue
+    }
+    guard offset + 2 < encoded.length() &&
+      hex_digit(encoded[offset + 1]) is Some(high) &&
+      hex_digit(encoded[offset + 2]) is Some(low) else {
+      return None
+    }
+    bytes.push((high * 16 + low).to_byte())
+    offset += 3
+  }
+  let decoded = Bytes::from_array(bytes[:])
+  Some(@utf8.decode(decoded[:])) catch {
+    _ => None
+  }
+}
+
+///|
+fn hex_digit(value : Byte) -> Int32? {
+  let code = value.to_int()
+  if value >= b'0' && value <= b'9' {
+    Some(code - b'0'.to_int())
+  } else if value >= b'A' && value <= b'F' {
+    Some(code - b'A'.to_int() + 10)
+  } else if value >= b'a' && value <= b'f' {
+    Some(code - b'a'.to_int() + 10)
+  } else {
+    None
+  }
 }
