@@ -4,6 +4,8 @@ pub(all) suberror CheckError {
 }
 
 ///|
+// Retain the explicit input depth limit while the RC deprecates its label.
+#warnings("-deprecated")
 pub fn parse_json(text : String) -> Json raise CheckError {
   if text.length() > 4194304 {
     raise Invalid("JSON exceeds the document limit")

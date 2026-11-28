@@ -11,7 +11,7 @@ fn trace_problem_key(problem : Json) -> String raise CheckError {
       "upstream_error"
       | "unavailable_output"
       | "out_of_order"
-      | "missing_upstream_call"
+      | "missing_upstream_call",
     ) => detail
     _ => Json::null()
   }

@@ -5,9 +5,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - run: curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
       - run: echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+      - run: moon version --all
       - run: moon check --deny-warn
       - run: moon test
       - run: moon check --target js --deny-warn
       - run: moon test --target js
+      - run: moon build --target js --deny-warn
+      - run: moon run cmd/main --target js -- check examples/orders-before.json examples/orders-plan.json
